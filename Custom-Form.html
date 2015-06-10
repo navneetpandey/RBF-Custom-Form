@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head> 
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript"> 
+ $(document).ready(function()
+    {  
+		dhis2.util.on('dhis2.de.event.dataValuesLoaded', function() {
+   			$('#thetable tbody tr:gt(0)').each(function(){
+   				processAndFillRow($(this));
+   			});
+   		});	
+        $('#thetable tbody input').bind('input', function(){	
+            var rowIndex=($(this).parent().parent().parent().children().index($($(this).parent().parent()))+1) ;
+             var tr = $( "#thetable tbody tr:nth-child("+rowIndex+")");
+      		processAndFillRow(tr);
+            
+        });
+    
+        function processAndFillRow(tr){
+        	var dec = tr.find("td:eq(2)").find("input").val();
+        	var ver = tr.find("td:eq(3)").find("input").val();
+        	var gmd = tr.find("td:eq(6)").find("input").val();
+        	setStatistics(tr,dec,ver,gmd);
+        	if(dec && ver && gmd){
+        		tr.find("td:eq(6)").find("input").attr("disabled", true);
+        	}
+       		$('#thetable tfoot input').val(sumOfColumns($('#thetable'), 10)||0)
+     	 
+        }
+        function sumOfColumns(table, columnIndex) {
+        	var total = 0.0;
+			var rows = table.find("tbody tr:gt(0)");
+				rows.children("td:nth-child(10)").find("input").each(function() {
+				    //each time we add the cell to the total
+				    total += parseFloat(this.value)||0;
+				});
+			return total.toFixed(2);
+		}
+        function setStatistics(tr,dec,ver,gmd){
+    		var differenceIndex=4;
+    		var percentageIndex=5;
+    		var totalIncomeEarnedIndex=7;
+    		var incomeLossIndex=8;
+    		var totalIncomeDueIndex=9;
+    		var percentageDifference=getPercentageDifference(dec,ver);
+    		var incomeLoss=getIncomeLoss(ver,gmd,percentageDifference);
+
+    		tr.find("td:eq("+differenceIndex+")").html(getDifference(dec,ver)||0);
+    		tr.find("td:eq("+percentageIndex+")").html(percentageDifference)||0;
+    		tr.find("td:eq("+totalIncomeEarnedIndex+")").html(getTotalIncomeEarned(ver,gmd)||0);
+    		tr.find("td:eq("+incomeLossIndex+")").html(incomeLoss||0);
+    		tr.find("td:eq("+totalIncomeDueIndex+")").find("input").val(getTotalIncomeDue(ver,gmd,incomeLoss)||0);
+
+
+    	}
+
+    	function getDifference(dec,ver){
+    		return (parseInt(dec)-parseInt(ver));
+    	}   
+
+    	function getPercentageDifference(dec,ver){
+    		return (((parseInt(dec)-parseInt(ver))/parseInt(dec))*100).toFixed(2);
+
+    	}
+
+    	function getTotalIncomeEarned(ver,gmd){
+    		return ver*gmd; 
+    	}
+
+    	function getIncomeLoss(ver,gmd,percentageDifference){
+    		return Math.abs(percentageDifference)>5.0 ? ((ver*gmd)/4):0; ;
+    	}
+
+    	function getTotalIncomeDue(ver,gmd,incomeLoss){
+    		return (ver*gmd)-incomeLoss;
+    	}
+	}
+);
+
+</script>
+<table border="1" cellpadding="1" cellspacing="1" id="thetable" in="" style="width: 500px;">
+	<tbody>
+		<tr>
+			<td><strong>No</strong></td>
+			<td><strong>Indicator&nbsp;</strong></td>
+			<td><strong>Total Declared(A)</strong></td>
+			<td><strong>Total Verified(B)</strong></td>
+			<td><strong>Difference(A-B)</strong></td>
+			<td><strong>Percentage Difference</strong></td>
+			<td><strong>Price in GMD</strong></td>
+			<td><strong>Totatl Income Earned</strong></td>
+			<td><strong>Income loss(Due to +/-5% Diff)</strong></td>
+			<td><strong>Total Income Due(GMD</strong>)</td>
+		</tr>
+		<tr>
+			<td>1.</td>
+			<td>Vitamin A Suplementation</td>
+			<td><input id="qfo7Ecx6wNC-eRawZPze1cy-val" title="qfo7Ecx6wNC - Vitamin A Supplementation_DEC - eRawZPze1cy - (default) - int" value="100" /></td>
+			<td><input id="DY2P7SAPu7c-eRawZPze1cy-val" title="DY2P7SAPu7c - Vitamin A Supplementation_VER - eRawZPze1cy - (default) - int" value="97" /></td>
+			<td></td>
+			<td></td>
+			<td><input id="oekYFaOVOw3-eRawZPze1cy-val" title="oekYFaOVOw3 - Vitamin A Supplementation_TRF - eRawZPze1cy - (default) - int" value="2" /></td>
+			<td></td>
+			<td></td>
+			<td><input id="AyDqH10OVCF-eRawZPze1cy-val" title="AyDqH10OVCF - Vitamin A Supplementation_RES - eRawZPze1cy - (default) - int" value="5" /></td>
+			<!-- <td><input id="qfo7Ecx6wNC-eRawZPze1cy-val" title="qfo7Ecx6wNC - Vitamin A Supplementation_DEC - eRawZPze1cy - (default) - int" value="[ Vitamin A Supplementation_DEC (default) ]" /></td>
+			<td><input id="DY2P7SAPu7c-eRawZPze1cy-val" title="DY2P7SAPu7c - Vitamin A Supplementation_VER - eRawZPze1cy - (default) - int" value="[ Vitamin A Supplementation_VER (default) ]" /></td>
+			<td></td>
+			<td></td>
+			<td><input id="oekYFaOVOw3-eRawZPze1cy-val" title="oekYFaOVOw3 - Vitamin A Supplementation_TRF - eRawZPze1cy - (default) - int" value="[ Vitamin A Supplementation_TRF (default) ]" /></td>
+			<td></td>
+			<td></td>
+			<td><input id="AyDqH10OVCF-eRawZPze1cy-val" title="AyDqH10OVCF - Vitamin A Supplementation_RES - eRawZPze1cy - (default) - int" value="[ Vitamin A Supplementation_RES (default) ]" /></td> -->
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td><input id="AyDqH10OVCF-eRawZPze1cy-val" title="AyDqH10OVCF - Vitamin A Supplementation_RES - eRawZPze1cy - (default) - int" value="[ Vitamin A Supplementation_RES (default) ]" /></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+	<tfoot> 
+		<tr border-collapse="">
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>Grand Total</td>
+			<td><input type="text" /></td>
+		</tr>
+	 
+	</tfoot>
+</table>
+</body>
+</html>
+
+
+
