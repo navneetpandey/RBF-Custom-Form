@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head> 
+ <script type="text/javascript"> 
+ $(document).ready(function()
+    {  
+		dhis2.util.on('dhis2.de.event.dataValuesLoaded', function() {
+   			$('#thetable tbody tr:gt(0)').each(function(){
+   				processAndFillRow($(this));
+   			});
+   		});	
+        $('#thetable tbody input').bind('input', function(){	
+            var rowIndex=($(this).parent().parent().parent().children().index($($(this).parent().parent()))+1) ;
+             var tr = $( "#thetable tbody tr:nth-child("+rowIndex+")");
+      		processAndFillRow(tr);
+            
+        });
+    
+        function processAndFillRow(tr){
+        	var atr = tr.find("td:eq(2)").find("input").val();
+        	var avl = tr.find("td:eq(3)").find("input").val();
+        	setStatistics(tr,atr,avl);
+        	var sumAtr=sumOfColumns($('#thetable'), 3)||0;
+        	var sumAvl=sumOfColumns($('#thetable'), 4)||0;
+        	$('#thetable tfoot #atr_tot').html(sumAtr);
+       		$('#thetable tfoot #avl_tot').html(sumAvl);
+       		$('#thetable tfoot #per_tot').html(getPercentage(sumAtr,sumAvl)||0);
+     	 
+        }
+        function sumOfColumns(table, columnIndex) {
+        	var total = 0.0;
+			var rows = table.find("tbody tr:gt(0)");
+				rows.children("td:nth-child("+columnIndex+")").find("input").each(function() {
+				    //each time we add the cell to the total
+				    total += parseFloat(this.value)||0;
+				});
+			return total.toFixed(2);
+		}
+        function setStatistics(tr,atr,avl){
+    		var percentageIndex=4;
+    		var percentageDifference=
+    		tr.find("td:eq("+percentageIndex+")").html(getPercentage(atr,avl)||0); 
+
+
+    	} 
+    	function getPercentage(atr,avl){
+    		return ((parseInt(atr)/parseInt(avl))*100).toFixed(2);
+    	}
+ 	}
+);
+
+</script>
+<table border="1" cellpadding="1" cellspacing="1" id="thetable" in="" style="width: 500px;">
+	<tbody>
+		<tr>
+			<td>Number</td>
+			<td>Indicator</td>
+			<td>Attributed Points</td>
+			<td>Available Points</td>
+			<td>Percentage</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>INDICATEURS G&Eacute;N&Eacute;RAUX</td>
+			<td><input id="eqRT6HTlJCL-xRlKB5WetVH-val" title="eqRT6HTlJCL - INDICATEURS GÉNÉRAUX_ATR - xRlKB5WetVH - (default) - int" value="[ INDICATEURS GÉNÉRAUX_ATR (default) ]" /></td>
+			<td><input id="Tar7X6SaTUo-xRlKB5WetVH-val" title="Tar7X6SaTUo - INDICATEURS GÉNÉRAUX_AVL - xRlKB5WetVH - (default) - int" value="[ INDICATEURS GÉNÉRAUX_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>PLANIFICATION SUIVI ET EVALUATION</td>
+			<td><input id="RAnQnl0FKRC-xRlKB5WetVH-val" title="RAnQnl0FKRC - PLANIFICATION SUIVI ET EVALUATION_ATR - xRlKB5WetVH - (default) - int" value="[ PLANIFICATION SUIVI ET EVALUATION_ATR (default) ]" /></td>
+			<td><input id="TWWA8WH4dMs-xRlKB5WetVH-val" title="TWWA8WH4dMs - PLANIFICATION SUIVI ET EVALUATION_AVL - xRlKB5WetVH - (default) - int" value="[ PLANIFICATION SUIVI ET EVALUATION_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>GESTION FINANCI&Egrave;RE</td>
+			<td><input id="HFABDeFndq1-xRlKB5WetVH-val" title="HFABDeFndq1 - GESTION FINANCIÈRE_ATR - xRlKB5WetVH - (default) - int" value="[ GESTION FINANCIÈRE_ATR (default) ]" /></td>
+			<td><input id="baHS4Ljgk1h-xRlKB5WetVH-val" title="baHS4Ljgk1h - GESTION FINANCIÈRE_AVL - xRlKB5WetVH - (default) - int" value="[ GESTION FINANCIÈRE_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>HYGI&Egrave;NE &amp; ENVIRONNEMENT DE TRAVAIL</td>
+			<td><input id="Ik0HmqXN2s6-xRlKB5WetVH-val" title="Ik0HmqXN2s6 - HYGIÈNE &amp; ENVIRONNEMENT DE TRAVAIL_ATR - xRlKB5WetVH - (default) - int" value="[ HYGIÈNE &amp; ENVIRONNEMENT DE TRAVAIL_ATR (default) ]" /></td>
+			<td><input id="Uu8dVlHkkvu-xRlKB5WetVH-val" title="Uu8dVlHkkvu - HYGIÈNE &amp; ENVIRONNEMENT DE TRAVAIL_AVL - xRlKB5WetVH - (default) - int" value="[ HYGIÈNE &amp; ENVIRONNEMENT DE TRAVAIL_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>GESTION DES MEDICAMENTS</td>
+			<td><input id="yqfPrC6Cwxa-xRlKB5WetVH-val" title="yqfPrC6Cwxa - GESTION DES MEDICAMENTS_ATR - xRlKB5WetVH - (default) - int" value="[ GESTION DES MEDICAMENTS_ATR (default) ]" /></td>
+			<td><input id="dEKO68LJ5BN-xRlKB5WetVH-val" title="dEKO68LJ5BN - GESTION DES MEDICAMENTS_AVL - xRlKB5WetVH - (default) - int" value="[ GESTION DES MEDICAMENTS_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>MEDICAMENTS TRACEURS</td>
+			<td><input id="PR3mnAWq1jv-xRlKB5WetVH-val" title="PR3mnAWq1jv - MEDICAMENTS TRACEURS_ATR - xRlKB5WetVH - (default) - int" value="[ MEDICAMENTS TRACEURS_ATR (default) ]" /></td>
+			<td><input id="A29e66vlHgy-xRlKB5WetVH-val" title="A29e66vlHgy - MEDICAMENTS TRACEURS_AVL - xRlKB5WetVH - (default) - int" value="[ MEDICAMENTS TRACEURS_AVL (default) ]" /></td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr border-collapse="">
+			<td>&nbsp;</td>
+			<td>Grand Total</td>
+			<td id="atr_tot">&nbsp;</td>
+			<td id="avl_tot">&nbsp;</td>
+			<td id="per_tot">&nbsp;</td>
+		</tr>
+	</tfoot>
+</table>
+
+
+</body>
+</html>
+
+
+
